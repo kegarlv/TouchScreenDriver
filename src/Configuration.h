@@ -10,6 +10,6 @@ enum Pins {
 };
 
 const int baudRate = 9600;
-const int xPlaneResistance = 800;
+const int xPlaneResistance = 840;
 
 } // namespace Configuration

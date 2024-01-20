@@ -1,0 +1,21 @@
+{
+    "name": "TouchscreenHID",
+    "version": "1.0.0",
+    "description": "",
+    "keywords": "touchscreen, hid",
+    "authors":
+    [
+      {
+        "name": "Ivan V",
+        "email": "kegarlv@gmail.com",
+        "url": "",
+        "maintainer": true
+      }
+    ],
+    "license": "MIT",
+    "dependencies": {
+      "nicohood/HID-Project": "^2.8.4"
+    },
+    "frameworks": "*",
+    "platforms": "*"
+  }

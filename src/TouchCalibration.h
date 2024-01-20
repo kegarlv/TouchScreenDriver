@@ -9,6 +9,9 @@
 #include "Utils.h"
 #include "LoggerSystem.h"
 
+#ifdef TAG
+#undef TAG
+#endif
 #define TAG "TouchCalibration"
 
 class TouchCalibrationSystem {

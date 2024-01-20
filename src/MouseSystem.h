@@ -4,6 +4,7 @@
 
 #include "Configuration.h"
 #include "HID-Project.h"
+#include "TouchscreenHID.h"
 
 #include "TouchScreen.h"
 
@@ -15,10 +16,6 @@
 #define TAG "MouseSystem"
 
 namespace {
-String toString(const TSPoint &point) {
-  return "Point {.x=" + String(point.x) + ", .y=" + String(point.y) +
-         ", .z=" + String(point.z) + "}";
-}
 
 template <typename T>
 T clamp(const T &value, const T &minValue, const T &maxValue) {
@@ -35,13 +32,18 @@ TSPoint normalizePoint(const TSPoint &point) {
   auto x = point.x; // range [90 .. 920]
   auto y = point.y; // range [180 .. 860]
 
-  x = map(x, 90, 900, 0, 10000);
-  y = map(y, 180, 860, 0, 10000);
+  x = map(x, 85, 944, 0, 10000);
+  y = map(y, 184, 866, 0, 10000);
 
   return {x, y, point.z};
 }
 
 } // namespace
+
+Logger& operator<<(Logger &l, const TSPoint& point) {
+  l << "{ .x =" << point.x << ", .y =" << point.y << "}";
+  return l;
+}
 
 class MouseSystem : public ISystem {
   TouchScreen *mTouchScreen = nullptr;
@@ -64,13 +66,24 @@ public:
   void onStart() override { AbsoluteMouse.begin(); }
 
   void onLoop() override {
+    static TSPoint minP = {20000, 20000, 20000};
+    static TSPoint maxP = {-20000, -20000, -20000};
     const auto point = mTouchScreen->getPoint();
     const bool pressed = point.z > mTouchScreen->pressureThreshhold;
     if (!pressed) {
       handleRelease();
     } else {
-    handleTouch(point);
+      handleTouch(point);
+      maxP.x = max(maxP.x, point.x);
+      maxP.y = max(maxP.y, point.y);
+      minP.x = min(minP.x, point.x);
+      minP.y = min(minP.y, point.y);
+
+      Logger(TAG) << "Max" << maxP;
+      Logger(TAG) << "Min" << minP;
+
     }
+    
   }
 
   void setOnEventListner(OnEventListner *onEventListener) {
